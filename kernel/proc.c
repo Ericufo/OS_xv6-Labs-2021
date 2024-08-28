@@ -247,6 +247,27 @@ userinit(void)
   release(&p->lock);
 }
 
+// Return the number of non-UNUSED procs in the process table.
+int getnproc(void)
+{
+  struct proc *p;
+  int count = 0;
+  for (p = proc; p < &proc[NPROC]; p++)
+  {
+    acquire(&p->lock);
+    if (p->state != UNUSED)
+    {
+      count++;
+      release(&p->lock);
+    }
+    else
+    {
+      release(&p->lock);
+    }
+  }
+  return count;
+}
+
 // Grow or shrink user memory by n bytes.
 // Return 0 on success, -1 on failure.
 int
@@ -291,6 +312,9 @@ fork(void)
 
   // copy saved user registers.
   *(np->trapframe) = *(p->trapframe);
+
+  //copy trace mask
+  np->tracemask = p->tracemask;
 
   // Cause fork to return 0 in the child.
   np->trapframe->a0 = 0;
