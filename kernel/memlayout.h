@@ -50,6 +50,8 @@
 // map the trampoline page to the highest address,
 // in both user and kernel space.
 #define TRAMPOLINE (MAXVA - PGSIZE)
+// the minimum address the mmap can use - lab10
+#define MMAPMINADDR (TRAPFRAME - 10 * PGSIZE)
 
 // map kernel stacks beneath the trampoline,
 // each surrounded by invalid guard pages.
